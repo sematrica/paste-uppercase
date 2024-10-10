@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>paste-upp̬͂̂è̵̡̝̀̒r̶̶̢̲̞̂̈́̈c̹̮͏̼aṣ̻̼ͤ̓̀͢͞e ̡̢̠̍̂͆̕ ̣̥͡</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #c0c0c0;
+            color: black;
+            margin: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border: 2px solid #a0a0a0;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        select, input[type="text"], input[type="radio"] {
+            margin-bottom: 20px;
+            display: block;
+            background-color: #fff;
+            border: 1px solid #000;
+            padding: 5px;
+            width: 100%;
+        }
+
+        .output {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-family: "Courier New", Courier, monospace;
+            background-color: #007BFF;
+            border: 2px solid #333;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="radio"] {
+            display: inline-block;
+        }
+
+        .old-system-border {
+            border: 2px solid black;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #d0d0d0;
+        }
+
+        #hieroglyphBox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            font-family: "Courier New", monospace;
+            color: #007BFF;
+        }
+
+        #logoCanvas {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="hieroglyphBox">
+    <span></span>
+</div>
+
+<canvas id="logoCanvas" width="150" height="150"></canvas>
+
+<div class="container">
+    <h1>paste - upp̬͂̂è̵̡̝̀̒r̶̶̢̲̞̂̈́̈c̹̮͏̼aṣ̻̼ͤ̓̀͢͞e ̡̢̠̍̂͆̕ ̣̥͡<</h1>
+
+    <!-- Max Length Selection -->
+    <label for="maxLength" class="old-system-border">Max Length</label>
+    <select id="maxLength" class="old-system-border">
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+    </select>
+
+    <!-- isSpecial Radio Buttons -->
+    <label class="old-system-border">Include Special Characters?</label>
+    <input type="radio" id="specialYes" name="isSpecial" value="yes" checked>
+    <label for="specialYes">Yes</label>
+    <input type="radio" id="specialNo" name="isSpecial" value="no">
+    <label for="specialNo">No</label>
+
+    <!-- Optional Words Input -->
+    <label for="optionalWords" class="old-system-border">Optional Words (Comma Separated)</label>
+    <input type="text" id="optionalWords" placeholder="Enter words separated by commas" class="old-system-border">
+
+    <!-- Generate Button -->
+    <button class="btn" onclick="generatePassword()">Generate Password</button>
+
+    <!-- Copy Button -->
+    <button class="btn" id="copyButton" onclick="copyToClipboard()">Copy Password</button>
+
+    <!-- Output Section -->
+    <div class="output old-system-border" id="output"></div>
+</div>
+
+<script>
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function getRandomChar(charSet) {
+            return charSet.charAt(Math.floor(Math.random() * charSet.length));
+        }
+
+        function generatePassword() {
+            const maxLength = parseInt(document.getElementById('maxLength').value);
+            const isSpecial = document.querySelector('input[name="isSpecial"]:checked').value === 'yes';
+            const optionalWords = document.getElementById('optionalWords').value.split(',').map(word => word.trim()).filter(word => word.length > 0);
+
+            const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const lettersLower = 'abcdefghijklmnopqrstuvwxyz';
+            const lettersUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+
+            let password = '';
+            let numCount = Math.ceil(maxLength * 0.30);  // 30% numbers
+            let specialCount = isSpecial ? Math.ceil(maxLength * 0.10) : 0;  // 10% special if enabled
+            let letterCount = maxLength - numCount - specialCount;
+
+            // Ensure there is at least one uppercase and one lowercase letter
+            password += getRandomChar(lettersUpper);
+            password += getRandomChar(lettersLower);
+            letterCount -= 2;
+
+            // Add numbers to password
+            for (let i = 0; i < numCount; i++) {
+                password += getRandomChar(numbers);
+            }
+
+            // Add special characters to password (if applicable)
+            if (isSpecial) {
+                for (let i = 0; i < specialCount; i++) {
+                    password += getRandomChar(specialChars);
+                }
+            }
+
+            // Add letters (random parts of optional words if provided)
+            if (optionalWords.length > 0) {
+                for (let i = 0; i < letterCount; i++) {
+                    let randomWord = optionalWords[getRandomInt(0, optionalWords.length)];
+                    let randomPart = randomWord.substr(getRandomInt(0, randomWord.length), 1);
+                    password += randomPart;
+                }
+            } else {
+                for (let i = 0; i < letterCount; i++) {
+                    password += getRandomChar(lettersLower + lettersUpper);
+                }
+            }
+
+            // Shuffle password (Fisher-Yates shuffle)
+            password = password.split('');
+            for (let i = password.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [password[i], password[j]] = [password[j], password[i]];
+            }
+            password = password.join('');
+
+            document.getElementById('output').innerText = 'Generated Password: ' + password;
+        }
+
+        function copyToClipboard() {
+            const passwordText = document.getElementById('output').innerText.replace('Generated Password: ', '');
+            if (passwordText) {
+                navigator.clipboard.writeText(passwordText).then(() => {
+                    alert('Password copied to clipboard!');
+                }, (err) => {
+                    console.error('Error copying text: ', err);
+                });
+            } else {
+                alert('No password to copy!');
+            }
+        }
+
+        // JavaScript for Hieroglyph Display
+        const hieroglyphs = [
+            '𓂝', '𓄿', '𓃀', '𓎛', '𓎡', '𓂧', '𓈖', '𓇋', '𓍿', '𓊃', '𓋴', '𓂻',
+            '𓆑', '𓌳', '𓍯', '𓋹', '𓆗', '𓌃', '𐰀', '𓌳', '𓂝', '𓍯', '𓋹', '𓆗',
+            '𓅓', '𓂀', '𓏏', '𓇳', '𓏠', '𓂙', '𓁿', '𓆓', '𓉔', '𓎿', '𓐍', '𓂟'
+        ];
+
+        let currentIndex = 0;
+
+        function displayHieroglyph() {
+            const hieroglyphBox = document.querySelector('#hieroglyphBox span');
+            hieroglyphBox.textContent = hieroglyphs[currentIndex];
+
+            currentIndex = (currentIndex + 1) % hieroglyphs.length;
+        }
+
+        setInterval(displayHieroglyph, 1000);
+
+        // JavaScript for spinning sphere with particles
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const particles = [];
+        const numParticles = 12;
+        const radius = 70;
+
+        for (let i = 0; i < numParticles; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            particles.push({
+                angle,
+                distance: Math.random() * 20 + radius,
+                size: Math.random() * 3 + 1,
+                speed: Math.random() * 0.05 + 0.01
+            });
+        }
+
+        function drawSphere() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the spinning sphere
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#007BFF';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Draw particles spinning around
+            particles.forEach(p => {
+                p.angle += p.speed;
+
+                const x = canvas.width / 2 + Math.cos(p.angle) * p.distance;
+                const y = canvas.height / 2 + Math.sin(p.angle) * p.distance;
+
+                ctx.beginPath();
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#007BFF';
+                ctx.fill();
+            });
+
+            requestAnimationFrame(drawSphere);
+        }
+
+        drawSphere();
+    </script>
+</body>
+</html>
